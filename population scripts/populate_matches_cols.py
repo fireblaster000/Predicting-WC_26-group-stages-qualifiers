@@ -8,10 +8,6 @@ from openpyxl import load_workbook
 # -----------------------------
 EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"
 SHEET_NAME = "Team_Group_Data"
-
-# IMPORTANT:
-# The Kaggle link you used is "1872 to 2017". That will cause missing recent matches for 2018/2022.
-# Prefer the newer "results.csv" (1872-2024) if possible, but script works either way.
 RESULTS_CSV = r"data\results.csv"
 
 # Choose recent window size
@@ -137,7 +133,7 @@ def compute_recent_form_and_write():
                 team_games, team, cutoff_ts, N_RECENT
             )
 
-    # Columns we will write
+    # Columns I will write
     recent_cols = [
         "recent_window_n_matches",
         "recent_win_rate",
