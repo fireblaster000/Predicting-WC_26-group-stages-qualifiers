@@ -1,0 +1,17 @@
+feature_order
+team_elo_pre
+recent_win_rate
+recent_goal_diff_per_match
+recent_goals_for_per_match
+recent_goals_against_per_match
+opp_elo_mean
+opp_elo_max
+group_elo_std
+elo_gap_vs_opp_mean
+host_team_flag
+log_gdp_per_capita_pre
+confed_CAF
+confed_CONCACAF
+confed_CONMEBOL
+confed_OFC
+confed_UEFA

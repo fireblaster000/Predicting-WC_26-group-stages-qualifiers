@@ -1,0 +1,33 @@
+group_id,team_name,true_qualified,predicted_qualified
+Group A,Ecuador,0,1
+Group A,Netherlands,1,1
+Group A,Qatar,0,1
+Group A,Senegal,1,0
+Group B,England,1,1
+Group B,Iran,0,0
+Group B,United States,1,1
+Group B,Wales,0,0
+Group C,Argentina,1,1
+Group C,Mexico,0,1
+Group C,Poland,1,0
+Group C,Saudi Arabia,0,0
+Group D,Australia,1,0
+Group D,Denmark,0,1
+Group D,France,1,1
+Group D,Tunisia,0,0
+Group E,Costa Rica,0,0
+Group E,Germany,0,0
+Group E,Japan,1,0
+Group E,Spain,1,1
+Group F,Belgium,0,0
+Group F,Canada,0,1
+Group F,Croatia,1,0
+Group F,Morocco,1,0
+Group G,Brazil,1,1
+Group G,Cameroon,0,0
+Group G,Serbia,0,0
+Group G,Switzerland,1,0
+Group H,Ghana,0,0
+Group H,Portugal,1,1
+Group H,South Korea,1,0
+Group H,Uruguay,0,1
