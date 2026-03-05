@@ -1,12 +1,17 @@
+from pathlib import Path
+
 import pandas as pd
 from openpyxl import load_workbook
 
-EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"
-SHEET_NAME = "Team_Group_Data"
+# EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"
+# SHEET_NAME = "Team_Group_Data"
+data_folder_path = Path(__file__).parent.parent / "data"
+EXCEL_PATH = data_folder_path / "Prediction Dataset_World Cup 2026.xlsx"
+SHEET_NAME = "Dataset"
 
 def compute_group_elo_features():
     # Read sheet (header is on row 3; skip first 2 rows)
-    df = pd.read_excel(EXCEL_PATH, sheet_name=SHEET_NAME, skiprows=2)
+    df = pd.read_excel(EXCEL_PATH, sheet_name=SHEET_NAME, skiprows=0)
 
     # Keep only rows with required fields
     needed = ["tournament_year", "group_id", "team_name", "team_elo_pre"]
@@ -25,6 +30,17 @@ def compute_group_elo_features():
     )
 
     df = df.merge(group_stats, on=["tournament_year", "group_id"], how="left")
+
+    #drop cols if already exist and make new
+    if "opp_elo_mean" in df.columns:
+        df.drop(columns=["opp_elo_mean"], inplace=True)
+    if "opp_elo_max" in df.columns:
+        df.drop(columns=["opp_elo_max"], inplace=True)
+    if "group_elo_std" in df.columns:
+        df.drop(columns=["group_elo_std"], inplace=True)
+    if "elo_gap_vs_opp_mean" in df.columns:
+        df.drop(columns=["elo_gap_vs_opp_mean"], inplace=True)
+    
 
     # If std becomes NaN (rare; e.g., group_size==1), set to 0
     df["group_elo_std"] = df["elo_std"].fillna(0.0)
@@ -72,7 +88,7 @@ def compute_group_elo_features():
     wb = load_workbook(EXCEL_PATH)
     ws = wb[SHEET_NAME]
 
-    header_row = 3
+    header_row = 1
     header_to_col = {}
     for col in range(1, ws.max_column + 1):
         v = ws.cell(header_row, col).value
@@ -80,11 +96,16 @@ def compute_group_elo_features():
             header_to_col[str(v).strip()] = col
 
     required_cols = ["opp_elo_mean", "opp_elo_max", "group_elo_std", "elo_gap_vs_opp_mean"]
+
     for c in required_cols:
         if c not in header_to_col:
-            raise ValueError(f"Missing column in Excel header: {c}")
+            #just add it at the end if missing
+            new_col = ws.max_column + 1
+            ws.cell(header_row, new_col).value = c
+            header_to_col[c] = new_col
+            # raise ValueError(f"Missing column in Excel header: {c}")
 
-    data_start_row = 4
+    data_start_row = 2
     rows_written = 0
 
     for excel_row in range(data_start_row, ws.max_row + 1):

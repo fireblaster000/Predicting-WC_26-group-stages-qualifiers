@@ -6,9 +6,14 @@ from openpyxl import load_workbook
 # -----------------------------
 # Paths
 # -----------------------------
-EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"
-SHEET_NAME = "Team_Group_Data"
-RESULTS_CSV = r"data\results.csv"
+# EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"
+# SHEET_NAME = "Team_Group_Data"
+# RESULTS_CSV = r"data\results.csv"
+from pathlib import Path
+data_folder_path = Path(__file__).parent.parent / "data"
+EXCEL_PATH = data_folder_path / "Prediction Dataset_World Cup 2026.xlsx"
+SHEET_NAME = "Dataset"
+RESULTS_CSV = data_folder_path / "results.csv"
 
 # Choose recent window size
 N_RECENT = 10
@@ -41,8 +46,9 @@ def load_team_results(results_csv_path: str) -> pd.DataFrame:
     if missing_cols:
         raise ValueError(f"results.csv is missing required columns: {missing_cols}. "
                          f"Found columns: {list(res.columns)}")
-
-    res["date"] = pd.to_datetime(res["date"], errors="coerce")
+    # results csv has date col in both date and general format, it only stores the general ones and skips all the date format one
+    res["date"] = res["date"].apply(lambda x: pd.to_datetime(x, errors="coerce") if isinstance(x, str) else pd.NaT)
+    # res["date"] = pd.to_datetime(res["date"], errors="coerce")
 
     home = pd.DataFrame({
         "date": res["date"],
@@ -103,7 +109,7 @@ def compute_recent_form_and_write():
         )
 
     # Read Excel to get rows we need (header is on row 3)
-    df = pd.read_excel(EXCEL_PATH, sheet_name=SHEET_NAME, skiprows=2)
+    df = pd.read_excel(EXCEL_PATH, sheet_name=SHEET_NAME, skiprows=0)
     req = ["tournament_year", "group_id", "team_name", "tournament_start_date"]
     df = df[df[req].notna().all(axis=1)].copy()
 
@@ -115,13 +121,28 @@ def compute_recent_form_and_write():
     df["tournament_start_date"] = pd.to_datetime(df["tournament_start_date"], errors="coerce")
     df["cutoff_date"] = df["tournament_start_date"] - pd.Timedelta(days=1)
     df["cutoff_date_str"] = df["cutoff_date"].dt.strftime("%Y-%m-%d")
+    #for 2026 worldcup, cutoff date is in the future, so set it to today
+    today_str = pd.Timestamp.today().strftime("%Y-%m-%d")
+    df["cutoff_date_str"] = df["cutoff_date_str"].apply(lambda x: x if x <= today_str else today_str)
+    df["cutoff_date"] = pd.to_datetime(df["cutoff_date_str"], errors="coerce")
 
     # Load results and make team-centric table
     team_games = load_team_results(RESULTS_CSV)
+    # print(f"sample tail of team_games:\n{team_games.tail(10)}")
+    # print(team_games.sort_values("date").tail(10))
+    #print team_games.head(10)
+    #print team_games.shape[0]
+    # print(f"Loaded {team_games.shape[0]} team-games from results.csv")
+    # print(f"Unique teams in results.csv: {team_games['team'].nunique()}")
+    # print(f"sample head of team_games:\n{team_games.head(10)}")
 
     # Unique cutoffs and teams we need features for
     unique_cutoffs = sorted(df["cutoff_date"].dropna().unique())
     teams_needed = sorted(df["team_name_norm"].dropna().unique())
+    #print the unique cutoff only, not the length
+    print(f"Unique cutoff dates to compute features for: {unique_cutoffs}")
+    # print(f"Unique cutoff dates to compute features for: {len(unique_cutoffs)}")
+    # print(f"Unique teams to compute features for: {len(teams_needed)}")
 
     # Build lookup: (cutoff_date_str, team_norm) -> 5-tuple feats
     feat_lookup = {}
@@ -129,6 +150,7 @@ def compute_recent_form_and_write():
         cutoff_ts = pd.to_datetime(cutoff)
         cutoff_str = cutoff_ts.strftime("%Y-%m-%d")
         for team in teams_needed:
+            # print(f"Computing recent features for team '{team}' with cutoff {cutoff_str}...")
             feat_lookup[(cutoff_str, team)] = recent_features_for_team(
                 team_games, team, cutoff_ts, N_RECENT
             )
@@ -180,7 +202,7 @@ def compute_recent_form_and_write():
     wb = load_workbook(EXCEL_PATH)
     ws = wb[SHEET_NAME]
 
-    header_row = 3
+    header_row = 1
     header_to_col = {}
     for col in range(1, ws.max_column + 1):
         v = ws.cell(header_row, col).value
@@ -189,9 +211,13 @@ def compute_recent_form_and_write():
 
     for c in recent_cols:
         if c not in header_to_col:
-            raise ValueError(f"Missing column in Excel header: {c}. Add it to the template first.")
+            # Just add it at the end if missing
+            new_col = ws.max_column + 1
+            ws.cell(header_row, new_col).value = c
+            header_to_col[c] = new_col
+            # raise ValueError(f"Missing column in Excel header: {c}. Add it to the template first.")
 
-    data_start_row = 4
+    data_start_row = 2
     rows_written = 0
 
     for excel_row in range(data_start_row, ws.max_row + 1):

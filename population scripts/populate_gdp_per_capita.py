@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import re
 import math
 import pandas as pd
@@ -7,16 +8,22 @@ from openpyxl import load_workbook
 # =========================
 # PATHS
 # =========================
-EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"
-SHEET_NAME = "Team_Group_Data"
+# EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"
+# SHEET_NAME = "Team_Group_Data"
+data_folder_path = Path(__file__).parent.parent / "data"
+EXCEL_PATH = data_folder_path / "Prediction Dataset_World Cup 2026.xlsx"
+SHEET_NAME = "Dataset"
 
 # Put your downloaded World Bank CSV here (you can move it into data/)
-WB_GDPPC_CSV = r"data\API_NY.GDP.PCAP.CD_DS2_en_csv_v2_31.csv"
+# WB_GDPPC_CSV = r"data\API_NY.GDP.PCAP.CD_DS2_en_csv_v2_31.csv"
+WB_GDPPC_CSV = data_folder_path / "API_NY.GDP.PCAP.CD_DS2_en_csv_v2_31.csv"
 
-HEADER_ROW = 3
-DATA_START_ROW = 4
+HEADER_ROW = 1
+DATA_START_ROW = 2
+# DATA_START_ROW = 4
 
 YEAR_OFFSET = 1  # use tournament_year - 1
+#if year 2026, we want GDP per capita from 2025 or latest available year before that. World Bank data is typically available up to 1-2 years before current year, so 2025 data may not be available yet. Adjust this offset as needed based on the latest year in your World Bank CSV.
 
 
 # =========================
@@ -178,8 +185,11 @@ def populate_gdppc_from_csv():
             tyear = int(tyear)
         except Exception:
             continue
-
-        macro_year = tyear - YEAR_OFFSET
+        #if year is 2026, we want GDP per capita from 2025 or latest available year before that. World Bank data is typically available up to 1-2 years before current year, so 2025 data may not be available yet. Adjust this offset as needed based on the latest year in your World Bank CSV.
+        if tyear == 2026:
+            macro_year = 2024  # or could set to 2024 if 2025 data is not available yet 
+        else:
+            macro_year = tyear - YEAR_OFFSET
         team = str(team).strip()
 
         wb_country = team_to_wb_country(team)

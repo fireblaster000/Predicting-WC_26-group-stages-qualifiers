@@ -1,11 +1,16 @@
+from pathlib import Path
+
 from openpyxl import load_workbook
 import re
 
-EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"
-SHEET_NAME = "Team_Group_Data"
+# EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"
+# SHEET_NAME = "Team_Group_Data"
+data_folder_path = Path(__file__).parent.parent / "data"
+EXCEL_PATH = data_folder_path / "Prediction Dataset_World Cup 2026.xlsx"
+SHEET_NAME = "Dataset"
 
-HEADER_ROW = 3
-DATA_START_ROW = 4
+HEADER_ROW = 1
+DATA_START_ROW = 2
 
 # -----------------------------
 # TEAM → CONFEDERATION MAP
@@ -69,6 +74,8 @@ TEAM_TO_CONFED = {
     "North Korea": "AFC",
     "China": "AFC",
     "Qatar": "AFC",
+    "Jordan": "AFC",
+    "Uzbekistan": "AFC",
 
     # CAF
     "Nigeria": "CAF",
@@ -84,6 +91,7 @@ TEAM_TO_CONFED = {
     "Angola": "CAF",
     "South Africa": "CAF",
     "Togo": "CAF",
+    "Cape Verde": "CAF",
 
     # CONCACAF
     "United States": "CONCACAF",
@@ -94,6 +102,8 @@ TEAM_TO_CONFED = {
     "Panama": "CONCACAF",
     "Trinidad and Tobago": "CONCACAF",
     "Canada": "CONCACAF",
+    "Curacao": "CONCACAF",
+    "Haiti": "CONCACAF",
 
     # OFC
     "New Zealand": "OFC",

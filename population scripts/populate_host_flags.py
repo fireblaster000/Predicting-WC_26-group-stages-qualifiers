@@ -1,12 +1,17 @@
+from pathlib import Path
 import re
 from openpyxl import load_workbook
 
-EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"
-SHEET_NAME = "Team_Group_Data"
+# EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"
+# SHEET_NAME = "Team_Group_Data"
+data_folder_path = Path(__file__).parent.parent / "data"
+EXCEL_PATH = data_folder_path / "Prediction Dataset_World Cup 2026.xlsx"
+SHEET_NAME = "Dataset"  
 
 # Header row is row 3 in your template
-HEADER_ROW = 3
-DATA_START_ROW = 4
+HEADER_ROW = 1
+DATA_START_ROW = 2
+# DATA_START_ROW = 4
 
 # World Cup hosts (men) for 1998–2022
 # NOTE: 2002 was co-hosted.
@@ -18,6 +23,7 @@ WC_HOSTS = {
     2014: ["Brazil"],
     2018: ["Russia"],
     2022: ["Qatar"],
+    2026: ["Mexico", "United States", "Canada"],
 }
 
 # Normalize team names in your sheet to match the host strings above

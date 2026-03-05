@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import re
 import sys
 import time
@@ -13,11 +14,15 @@ from io import StringIO
 
 # Paths (Edit these as needed)
 
-EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"  
-SHEET_NAME = "Team_Group_Data"
-CACHE_DIR = r"data\elo_snapshots_ifootball"  # snapshots saved here
+# EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"  
+# SHEET_NAME = "Team_Group_Data"
+# CACHE_DIR = r"data\elo_snapshots_ifootball"  # snapshots saved here
+data_folder_path = Path(__file__).parent.parent / "data"
+EXCEL_PATH = data_folder_path / "Prediction Dataset_World Cup 2026.xlsx"
+SHEET_NAME = "Dataset"
+CACHE_DIR = data_folder_path / "elo_snapshots_ifootball"
 
-os.makedirs(CACHE_DIR, exist_ok=True)
+# os.makedirs(CACHE_DIR, exist_ok=True)
 
 # -----------------------------
 # Elo snapshot URL template (site we are scraping from)
@@ -109,7 +114,7 @@ def scrape_elo_snapshot(date_obj, sleep_s=0.5):
 
 def populate_team_elo_pre():
     # Read the sheet into pandas (template header is on row 3, so skip first 2 rows)
-    df = pd.read_excel(EXCEL_PATH, sheet_name=SHEET_NAME, skiprows=2)
+    df = pd.read_excel(EXCEL_PATH, sheet_name=SHEET_NAME, skiprows=0)
 
     # Keep only rows that have the first 6 columns filled
     df = df[df["tournament_year"].notna() & df["team_name"].notna() & df["tournament_start_date"].notna()].copy()
@@ -125,6 +130,9 @@ def populate_team_elo_pre():
 
     # Compute cutoff_date_str = start_date - 1 day (NO to_pydatetime => no warning)
     df["cutoff_date_str"] = (df["tournament_start_date"] - pd.Timedelta(days=1)).dt.strftime("%Y-%m-%d")
+    # if cutoff date is in the future, set it to today
+    today_str = pd.Timestamp.today().strftime("%Y-%m-%d")
+    df["cutoff_date_str"] = df["cutoff_date_str"].apply(lambda x: x if x <= today_str else today_str)
 
     # Normalize team names
     df["team_name_norm"] = df["team_name"].apply(normalize_team_name)
@@ -165,7 +173,7 @@ def populate_team_elo_pre():
     ws = wb[SHEET_NAME]
 
     # Find column index for 'team_elo_pre' in the file header row (row 3)
-    header_row = 3
+    header_row = 1
     header_to_col = {}
     for col in range(1, ws.max_column + 1):
         val = ws.cell(header_row, col).value
@@ -187,7 +195,7 @@ def populate_team_elo_pre():
         elo_lookup[key] = getattr(r, "team_elo_pre")
 
     # Write Elo values row-by-row (data starts at row 4)
-    data_start_row = 4
+    data_start_row = 2
     rows_written = 0
 
     for excel_row in range(data_start_row, ws.max_row + 1):
