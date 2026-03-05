@@ -1,0 +1,11 @@
+"model","term","vif"
+"glm_alt","elo_gap_vs_opp_mean",1.47197049498965
+"glm_alt","log_gdp_per_capita_pre",1.42102318691191
+"glm_alt","confederation",1.16383787470972
+"glm_alt","recent_win_rate",1.15598989578599
+"glm_alt","host_team_flag",1.04047795406132
+"glm_base","team_elo_pre",1.51644992977636
+"glm_base","log_gdp_per_capita_pre",1.44512494696942
+"glm_base","recent_goal_diff_per_match",1.26717915724701
+"glm_base","confederation",1.1615730582039
+"glm_base","host_team_flag",1.03731842204905

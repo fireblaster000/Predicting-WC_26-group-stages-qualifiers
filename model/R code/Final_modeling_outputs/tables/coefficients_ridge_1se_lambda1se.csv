@@ -1,0 +1,10 @@
+"model","term","estimate","odds_ratio"
+"ridge_1se","(Intercept)",-1.43699613970819,0.237640526560066
+"ridge_1se","elo_gap_vs_opp_mean",0.00243102557608545,1.00243398291473
+"ridge_1se","recent_win_rate",1.03339050859572,2.81057899059399
+"ridge_1se","log_gdp_per_capita_pre",0.117455918507923,1.12463205339209
+"ridge_1se","host_team_flag",0.770258128359088,2.16032382266309
+"ridge_1se","confederationAFC",-0.626511864496607,0.534452797193332
+"ridge_1se","confederationCAF",-0.369033453912573,0.691402279951981
+"ridge_1se","confederationCONCACAF",0.107163451364045,1.11311617996889
+"ridge_1se","confederationUEFA",-0.130778207412137,0.877412356368968

@@ -1,0 +1,33 @@
+"tournament_year","group_id","team_name","qualified_from_group","pred_prob","pred_rank","predicted_qualify"
+2022,"Group A","Netherlands",1,0.834051535143043,1,1
+2022,"Group A","Ecuador",0,0.709471993415646,2,1
+2022,"Group A","Qatar",0,0.672400650467674,3,0
+2022,"Group A","Senegal",1,0.215048974861892,4,0
+2022,"Group B","United States",1,0.79587052054242,1,1
+2022,"Group B","England",1,0.720517042478067,2,1
+2022,"Group B","Wales",0,0.392645197293344,3,0
+2022,"Group B","Iran",0,0.175078494121394,4,0
+2022,"Group C","Argentina",1,0.977399938466609,1,1
+2022,"Group C","Mexico",0,0.597384743842451,2,1
+2022,"Group C","Poland",1,0.335418147938301,3,0
+2022,"Group C","Saudi Arabia",0,0.125873027026447,4,0
+2022,"Group D","France",1,0.802779958093944,1,1
+2022,"Group D","Denmark",0,0.729248314829234,2,1
+2022,"Group D","Tunisia",0,0.33147010395119,3,0
+2022,"Group D","Australia",1,0.275602540444785,4,0
+2022,"Group E","Spain",1,0.80488677619348,1,1
+2022,"Group E","Germany",0,0.727735711666659,2,1
+2022,"Group E","Costa Rica",0,0.597970634961503,3,0
+2022,"Group E","Japan",1,0.379263025005545,4,0
+2022,"Group F","Belgium",0,0.74564197443774,1,1
+2022,"Group F","Canada",0,0.733931740222365,2,1
+2022,"Group F","Croatia",1,0.570977913911208,3,0
+2022,"Group F","Morocco",1,0.400096919580782,4,0
+2022,"Group G","Brazil",1,0.979008772996551,1,1
+2022,"Group G","Switzerland",1,0.605297459604154,2,1
+2022,"Group G","Serbia",0,0.546520629549509,3,0
+2022,"Group G","Cameroon",0,0.135099070925132,4,0
+2022,"Group H","Uruguay",0,0.91538785280347,1,1
+2022,"Group H","Portugal",1,0.777014025753609,2,1
+2022,"Group H","South Korea",1,0.313080527192323,3,0
+2022,"Group H","Ghana",0,0.120047037163273,4,0
