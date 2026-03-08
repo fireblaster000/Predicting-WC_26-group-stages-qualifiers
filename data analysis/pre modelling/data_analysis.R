@@ -34,7 +34,7 @@ library(broom)
 input_path <- "group_stage_qualification_data.xlsx"
 
 # Main output folder
-out_dir <- "Diagnostic_plots"
+out_dir <- "part_1_diag_plots"
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 # Subfolders
@@ -261,6 +261,103 @@ purrr::walk(numeric_predictors, function(v) {
     save_plot_to(p, dir_logit, paste0("binned_logit_", safe_name(v), ".png"))
   }
 })
+
+# -------------------------
+# D) Binned logit(p) vs predictor — ALL IN ONE FIGURE
+# -------------------------
+
+make_logit_df <- function(data, x, bins = 10, eps = 1e-4) {
+  
+  xvals <- data[[x]]
+  if (all(is.na(xvals)) || length(unique(stats::na.omit(xvals))) < 5) return(NULL)
+  
+  tmp <- data %>%
+    dplyr::filter(!is.na(.data[[x]]), !is.na(Qualified_from_group)) %>%
+    dplyr::mutate(bin = dplyr::ntile(.data[[x]], bins)) %>%
+    dplyr::group_by(bin) %>%
+    dplyr::summarise(
+      x_mid = median(.data[[x]], na.rm = TRUE),
+      p_hat = mean(Qualified_from_group, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::mutate(
+      p_clip = pmin(1 - eps, pmax(eps, p_hat)),
+      logit_p = logit(p_clip),
+      variable = x
+    )
+  
+  return(tmp)
+}
+
+# Build combined dataframe
+logit_df <- purrr::map_dfr(
+  numeric_predictors,
+  ~ make_logit_df(df, .x, bins = 10)
+)
+
+# -------------------------
+# Select variables to show
+# -------------------------
+
+vars_to_plot <- c(
+  "group_elo_std",
+  "opp_elo_max",
+  "opp_elo_mean",
+  "recent_goal_diff_per_match",
+  "recent_win_rate",
+  "team_elo_pre",
+  "log_gdp_per_capita_pre",
+  "elo_gap_vs_opp_mean"
+)
+
+plot_df <- logit_df %>%
+  dplyr::filter(variable %in% vars_to_plot)
+
+
+# -------------------------
+# Plot with uncertainty band
+# -------------------------
+
+p_all <- ggplot(plot_df, aes(x = x_mid, y = logit_p)) +
+  geom_point() +
+  geom_smooth(
+    method = "lm",
+    se = TRUE,
+    color = "blue"
+  ) +
+  facet_wrap(~ variable, scales = "free_x", ncol = 4) +
+  labs(
+    title = "Linearity diagnostics for logistic regression predictors",
+    subtitle = "Binned logit(p) vs predictors",
+    x = NULL,
+    y = "logit(p)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(
+      hjust = 0.5,
+      face = "bold",
+      size = 16
+    ),
+    plot.subtitle = element_text(
+      hjust = 0.5,
+      face = "bold",
+      size = 12
+    ),
+    strip.text = element_text(
+      face = "bold",
+      size = 11
+    )
+  )
+
+
+ggsave(
+  file.path(out_dir, "binned_logit_facets.png"),
+  p_all,
+  width = 12,
+  height = 6,
+  dpi = 300
+)
 
 # -------------------------
 # 6) Correlation Diagnostics (numeric-numeric)
