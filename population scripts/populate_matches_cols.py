@@ -10,6 +10,7 @@ from openpyxl import load_workbook
 # SHEET_NAME = "Team_Group_Data"
 # RESULTS_CSV = r"data\results.csv"
 from pathlib import Path
+# change these if you move your Excel file or if the sheet name is different. The script will read tournament_year, group_id, team_name, tournament_start_date columns, and write recent-form features.
 data_folder_path = Path(__file__).parent.parent / "data"
 EXCEL_PATH = data_folder_path / "Prediction Dataset_World Cup 2026.xlsx"
 SHEET_NAME = "Dataset"

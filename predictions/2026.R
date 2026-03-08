@@ -14,6 +14,7 @@ invisible(lapply(pkgs, library, character.only = TRUE))
 # -------------------------
 # Paths
 # -------------------------
+# Edit these if you move your Excel file or if the sheet name is different. The script will read tournament_year, group_id, team_name, confederation, host_flag, team_elo_pre, elo_gap_vs_opp_mean, recent_win_rate, log_gdp_per_capita_pre columns.
 train_path <- "group_stage_qualification_data.xlsx"          # 1998–2022 dataset (skip=2)
 pred2026_path <- "Prediction Dataset_World Cup 2026.xlsx"    # 2026 dataset (skip=0)
 pred2026_sheet <- "Dataset"

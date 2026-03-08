@@ -4,6 +4,7 @@ from openpyxl import load_workbook
 
 # EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"
 # SHEET_NAME = "Team_Group_Data"
+# change these if you move your Excel file or if the sheet name is different. The script will read the tournament_year and team_name columns, and write host_flag column.
 data_folder_path = Path(__file__).parent.parent / "data"
 EXCEL_PATH = data_folder_path / "Prediction Dataset_World Cup 2026.xlsx"
 SHEET_NAME = "Dataset"  

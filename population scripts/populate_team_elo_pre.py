@@ -17,6 +17,7 @@ from io import StringIO
 # EXCEL_PATH = r"data\group_stage_qualification_data.xlsx"  
 # SHEET_NAME = "Team_Group_Data"
 # CACHE_DIR = r"data\elo_snapshots_ifootball"  # snapshots saved here
+# change these if you move your Excel file or if the sheet name is different. The script will read tournament_year, group_id, team_name, tournament_start_date columns, and write team_elo_pre column.
 data_folder_path = Path(__file__).parent.parent / "data"
 EXCEL_PATH = data_folder_path / "Prediction Dataset_World Cup 2026.xlsx"
 SHEET_NAME = "Dataset"

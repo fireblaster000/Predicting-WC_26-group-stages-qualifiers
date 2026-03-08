@@ -40,6 +40,7 @@ library(tibble)
 # -------------------------
 # 1) Paths / Output folders
 # -------------------------
+# Edit this if you move your Excel file or if the sheet name is different. The script will read the tournament_year, group_id, team_name, qualified_from_group, confederation, host_team_flag, team_elo_pre, elo_gap_vs_opp_mean, recent_goal_diff_per_match, recent_win_rate, log_gdp_per_capita_pre columns.
 input_path <- "group_stage_qualification_data.xlsx"
 
 out_dir <- "Final_modeling_outputs"
